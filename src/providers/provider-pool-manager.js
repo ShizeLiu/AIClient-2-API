@@ -471,6 +471,7 @@ export class ProviderPoolManager {
                 ...config,
                 MODEL_PROVIDER: providerType
             };
+            delete tempConfig.providerPools;
             const serviceAdapter = getServiceAdapter(tempConfig);
             
             // 调用适配器的 refreshToken 方法（内部封装了具体的刷新逻辑）
@@ -1454,6 +1455,7 @@ export class ProviderPoolManager {
                             ...targetConfig,
                             MODEL_PROVIDER: providerType
                         };
+                        delete tempConfig.providerPools;
                         const serviceAdapter = getServiceAdapter(tempConfig);
                         
                         if (typeof serviceAdapter.listModels === 'function') {
@@ -2238,9 +2240,11 @@ export class ProviderPoolManager {
 
         // ========== 实际 API 健康检查（带超时保护）==========
         const tempConfig = {
+            ...this.globalConfig,
             ...providerConfig,
             MODEL_PROVIDER: providerType
         };
+        delete tempConfig.providerPools;
         const serviceAdapter = getServiceAdapter(tempConfig);
 
         // 获取所有可能的请求格式
@@ -2360,7 +2364,7 @@ export class ProviderPoolManager {
                 }
 
                 // 一次性写入文件（使用原子化写入）
-                await atomicWriteFile(filePath, JSON.stringify(currentPools, null, 2), 'utf8');
+                await atomicWriteFile(filePath, JSON.stringify(currentPools, null, 2), { encoding: 'utf8', mode: 0o600 });
 
                 this._log('info', `configs/provider_pools.json updated successfully for types: ${typesToSave.join(', ')}`);
             } catch (error) {
