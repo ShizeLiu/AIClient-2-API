@@ -163,6 +163,16 @@
   </tr>
   <tr>
     <td width="25%" align="center" valign="middle">
+      <a href="https://www.axisnow.io">
+        <img src="static/axisnow.jpg" alt="AxisNow Sponsor" width="180">
+      </a>
+    </td>
+    <td width="75%" align="left" valign="middle">
+      <a href="https://www.axisnow.io">AxisNow</a> は、中国本土と世界各地のアクセス体験を両立しながら、Web サイトや API を保護・高速化します。さらにクライアント SDK を通じて、高速化とセキュリティ機能をネイティブ／モバイルアプリにも拡張します — <strong>セルフホスト型プライベート CDN｜サブスクリプション型 DDoS 防御 CDN｜自主管理でき、柔軟に組み合わせ可能な CDN ネットワーク。</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="25%" align="center" valign="middle">
       <img src="static/wechat.png" alt="Sponsor Contact" width="150">
     </td>
     <td width="75%" align="left" valign="middle">
