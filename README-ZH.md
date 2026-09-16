@@ -131,6 +131,7 @@
     </td>
   </tr>
 -->
+<!-- Fenno.ai and Qiniu Cloud AI
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://api.fenno.ai/register?redirect=/purchase?tab=subscription%26group=16&aff=2EW65KEQC938">
@@ -151,6 +152,7 @@
       七牛云 AI 是七牛云（02567.HK）旗下<strong>企业级大模型 MaaS 平台</strong>，可一站式调用全球 <strong>150+ 主流模型</strong>，兼容全球主流模型厂商协议，覆盖文本、图像、音频、视频、文件处理等全模态处理能力，服务超过 169 万企业及开发者用户。专属福利：企业用户可<a href="https://s.qiniu.com/FRF7bq">免费领 <strong>1200 万 Token</strong></a>，邀请好友最高得<strong>百亿 Token</strong>。
     </td>
   </tr>
+-->
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">

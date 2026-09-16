@@ -4,8 +4,20 @@ export function isKiroBuilderIdAuth(authMethod) {
 }
 
 /**
- * Builder ID has no discoverable profile. Keep any real profile supplied by
- * the credential, but never manufacture or persist a placeholder ARN.
+ * AWS Builder ID and Enterprise IdC use the same OIDC credential shape, so a
+ * builder-id label alone cannot determine whether a profile is discoverable.
+ * Try discovery for every profileless, non-social credential; callers treat a
+ * failed discovery as a soft failure and retain the profileless fallback.
+ */
+export function shouldDiscoverKiroProfile({ isSocialAuth, profileArn }) {
+    const hasProfileArn = typeof profileArn === 'string' && profileArn.trim() !== '';
+    return !hasProfileArn && !isSocialAuth;
+}
+
+/**
+ * Keep any real profile supplied or discovered for an AWS OIDC credential.
+ * For a profileless Builder ID credential, never manufacture or persist a
+ * placeholder ARN.
  */
 export function resolveKiroRequestProfileArn(authMethod, profileArn) {
     if (typeof profileArn === 'string' && profileArn.trim() !== '') {

@@ -131,6 +131,7 @@
     </td>
   </tr>
 -->
+<!-- Fenno.ai and Qiniu Cloud AI
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://api.fenno.ai/register?redirect=/purchase?tab=subscription%26group=16&aff=2EW65KEQC938">
@@ -151,6 +152,7 @@
       Qiniu Cloud AI is an <strong>enterprise-grade large-model MaaS platform</strong> under Qiniu Cloud (02567.HK). It offers one-stop access to <strong>150+ mainstream global models</strong>, is compatible with major model provider protocols, and covers full-modal capabilities including text, image, audio, video, and file processing, serving more than 1.69 million enterprise and developer users. Exclusive benefit: enterprise users can <a href="https://s.qiniu.com/FRF7bq">claim <strong>12 million tokens</strong> for free</a>, and can earn up to <strong>tens of billions of tokens</strong> by inviting friends.
     </td>
   </tr>
+-->
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">

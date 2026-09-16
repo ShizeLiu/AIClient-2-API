@@ -21,8 +21,8 @@ import { isRetryableNetworkError, MODEL_PROVIDER, formatExpiryLog, getNormalized
 import { getProviderPoolManager } from '../../services/service-manager.js';
 import { buildKiroAdditionalModelRequestFields } from './kiro-effort.js';
 import {
-    isKiroBuilderIdAuth,
     resolveKiroRequestProfileArn,
+    shouldDiscoverKiroProfile,
     shouldRouteBuilderToCodeWhisperer
 } from './kiro-profile.js';
 
@@ -872,7 +872,8 @@ async loadCredentials() {
         this.baseUrl = (this.config.KIRO_BASE_URL || defaultBaseUrl).replace("{{region}}", this.region);
         this.codewhispererBaseUrl = KIRO_CONSTANTS.CODEWHISPERER_BASE_URL.replace("{{region}}", this.region);
 
-        // Enterprise IdC 的 profileArn 在凭证装载期发现；Builder ID 改走无需 profileArn 的端点。
+        // AWS OIDC 凭证在装载期尝试发现 profileArn；无法发现时，
+        // profileless Builder ID 仍会路由到无需 profileArn 的端点。
         await this._ensureProfileArn(isSocialAuth);
     } catch (error) {
         logger.warn(`[Kiro Auth] Error during credential loading: ${error.message}`);
@@ -882,19 +883,17 @@ async loadCredentials() {
 /**
  * 解析 this.profileArn（唯一决策点）。
  * profileArn 是 CodeWhisperer 的订阅归属标识，缺失时上游返回 403 AccessDeniedException。
- * social 凭证由 Kiro auth 服务随刷新响应下发该字段；Enterprise IdC 的刷新响应
- * 不包含它，需要自行查询。Builder ID 不支持查询，生成请求改走无需该字段的端点。
+ * social 凭证由 Kiro auth 服务随刷新响应下发该字段；AWS OIDC 刷新响应
+ * 不包含它，需要自行查询。查询失败时保持 profileless，后续 Builder ID 请求
+ * 会路由到无需该字段的端点。
  * @param {boolean} isSocialAuth
  * @private
  */
 async _ensureProfileArn(isSocialAuth) {
-    if (typeof this.profileArn === 'string' && this.profileArn.trim() !== '') {
-        return;
-    }
-
     // social token 非 AWS 签发，ListAvailableProfiles 对它不适用。
-    // Builder ID 同样明确不支持该接口；生成请求会路由到无需 profileArn 的端点。
-    if (isSocialAuth || isKiroBuilderIdAuth(this.authMethod)) {
+    // Builder ID 与 Enterprise IdC 共用 AWS OIDC 凭证形态，不能仅凭
+    // authMethod/clientSecret 区分；统一尝试发现，失败时由请求路由安全降级。
+    if (!shouldDiscoverKiroProfile({ isSocialAuth, profileArn: this.profileArn })) {
         return;
     }
 
