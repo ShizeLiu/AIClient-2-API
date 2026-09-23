@@ -5,7 +5,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.61",
     "@anthropic-ai/tokenizer": "^0.0.4",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.1",
     "ai": "^6.0.175",
     "axios": "^1.14.0",
     "busboy": "^1.6.0",
