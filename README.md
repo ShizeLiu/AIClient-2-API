@@ -153,6 +153,7 @@
     </td>
   </tr>
 -->
+<!-- VMCard
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">
@@ -163,6 +164,7 @@
       <strong>VMCard | Enterprise Payment Cards for AI Businesses</strong> is built for AI account vendors, AI API providers, and teams managing bulk subscriptions. It enables seamless GPT / Claude payments with dedicated U.S. Visa BINs, API-based bulk card issuance, and the lowest settlement exchange rates available—ideal for high-volume, long-term, stable payment needs. <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">Register through this link</a>.
     </td>
   </tr>
+-->
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://www.axisnow.io">

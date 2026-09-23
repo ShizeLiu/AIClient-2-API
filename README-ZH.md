@@ -153,6 +153,7 @@
     </td>
   </tr>
 -->
+<!-- VMCard
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">
@@ -163,6 +164,7 @@
       <strong>VMCard｜AI 业务企业级支付卡</strong>，面向 AI 账号商、AI API 服务商及批量订阅业务团队。GPT / Claude 丝滑支付，专属美国 Visa 卡段，支持 API 批量开卡，全网最低结算汇率，满足大批量、长期稳定支付需求。<a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">通过此链接注册</a>。
     </td>
   </tr>
+-->
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://www.axisnow.io/zh">

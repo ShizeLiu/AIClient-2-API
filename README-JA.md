@@ -153,6 +153,7 @@
     </td>
   </tr>
 -->
+<!-- VMCard
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">
@@ -163,6 +164,7 @@
       <strong>VMCard｜AI ビジネス向けエンタープライズ決済カード</strong>は、AI アカウント販売事業者、AI API サービスプロバイダー、一括サブスクリプションを扱うチーム向けのサービスです。GPT / Claude の支払いをスムーズに行える専用の米国 Visa カード番号帯を提供し、API によるカードの一括発行と業界最低水準の決済為替レートに対応。大規模かつ長期的で安定した決済ニーズに応えます。<a href="https://vmcardio.com/zh/register?code=OPXPWHXWD5">このリンクから登録</a>できます。
     </td>
   </tr>
+-->
   <tr>
     <td width="25%" align="center" valign="middle">
       <a href="https://www.axisnow.io">
