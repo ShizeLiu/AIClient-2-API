@@ -1050,6 +1050,12 @@ export class ClaudeConverter extends BaseConverter {
                                         // [FIX tool_result images] 提取 base64 图片块转为 Gemini inlineData part。
                                         // 原逻辑把整个数组 JSON.stringify 成文本（图片数据变成乱码字符串，
                                         // 视觉模型因此"看不见"工具返回的截图，客户端表现为静默空回合）。
+                                        // [FIX tool_result images] 记录哪些 item 真的被转成了 inlineData。
+                                        // 只有转换成功的才从 fallback 里剔除——URL 来源的图片无法转换，
+                                        // 必须原样保留（Anthropic 的 ImageBlockParam 允许
+                                        // source.type='url'），否则只有 URL 图片的 tool_result 会
+                                        // 被静默清空成 result='[]'。
+                                        const convertedImageItems = new Set();
                                         for (const item of responseData) {
                                             if (item && item.type === 'image' && item.source?.type === 'base64' && item.source.data) {
                                                 imageParts.push({
@@ -1058,9 +1064,17 @@ export class ClaudeConverter extends BaseConverter {
                                                         data: item.source.data
                                                     }
                                                 });
+                                                convertedImageItems.add(item);
                                             }
                                         }
-                                        responseData = textParts || JSON.stringify(responseData.filter(item => !(item && item.type === 'image')));
+                                        const remaining = responseData.filter(item => !convertedImageItems.has(item));
+                                        const remainingText = remaining
+                                            .filter(item => item && item.type === 'text')
+                                            .map(item => item.text)
+                                            .join('\n');
+                                        // remaining 里已经不含成功转换的 base64 图片，
+                                        // 但仍保留 URL 图片等未转换内容，不静默丢弃。
+                                        responseData = remainingText || JSON.stringify(remaining);
                                     } else if (typeof responseData !== 'string') {
                                         responseData = JSON.stringify(responseData);
                                     }
