@@ -1157,6 +1157,8 @@ export class ClaudeConverter extends BaseConverter {
         }
 
         // 处理工具 - 使用 parametersJsonSchema 格式
+        const declaredFunctionNames = new Set();
+        const disableNativeTools = claudeRequest.tool_choice?.type === 'none';
         if (Array.isArray(claudeRequest.tools) && claudeRequest.tools.length > 0) {
             const functionDeclarations = [];
             let googleSearchTool = null;
@@ -1175,26 +1177,32 @@ export class ClaudeConverter extends BaseConverter {
                 // Anthropic 的 max_uses/allowed_domains/blocked_domains/user_location 与 Gemini grounding
                 // 参数不同构，先只透传能力本身。
                 if (typeof tool.type === 'string' && tool.type.startsWith('web_search')) {
-                    googleSearchTool = googleSearchTool || {};
+                    if (!disableNativeTools) {
+                        googleSearchTool = googleSearchTool || {};
+                    }
                     return;
                 }
 
-                // 处理 google_search 扩展
-                if (tool.google_search) {
-                    googleSearchTool = tool.google_search;
+                // functionCallingConfig.mode=NONE 只禁用函数调用，因此 tool_choice=none 时
+                // 必须直接移除不受该配置约束的 Gemini 原生服务端工具。这些工具也不能
+                // 同时落入 FunctionDeclaration，否则显式 tool_choice 会再次生成无效配置。
+                const isNativeTool = Boolean(tool.google_search || tool.url_context || tool.googleMaps);
+                if (isNativeTool) {
+                    if (!disableNativeTools) {
+                        if (tool.google_search) {
+                            googleSearchTool = tool.google_search;
+                        }
+                        if (tool.url_context) {
+                            urlContextTool = tool.url_context;
+                        }
+                        if (tool.googleMaps) {
+                            googleMapsTool = tool.googleMaps;
+                        }
+                    }
+                    return;
                 }
 
-                // 处理 url_context 扩展
-                if (tool.url_context) {
-                    urlContextTool = tool.url_context;
-                }
-
-                // 处理 google_maps 扩展
-                if (tool.googleMaps) {
-                    googleMapsTool = tool.googleMaps;
-                }
-
-                // 如果没有名称且不是上述扩展，则跳过函数处理
+                // 如果没有名称，则跳过函数处理
                 if (!tool.name) {
                     logger.warn("Skipping unnamed tool declaration in claudeRequest.tools.");
                     return;
@@ -1222,6 +1230,7 @@ export class ClaudeConverter extends BaseConverter {
                 }
                 
                 functionDeclarations.push(funcDecl);
+                declaredFunctionNames.add(funcDecl.name);
             });
             
             if (functionDeclarations.length > 0 || googleSearchTool || urlContextTool || googleMapsTool) {
@@ -1243,7 +1252,10 @@ export class ClaudeConverter extends BaseConverter {
 
         // 处理tool_choice
         if (claudeRequest.tool_choice) {
-            geminiRequest.toolConfig = this.buildGeminiToolConfigFromClaude(claudeRequest.tool_choice);
+            geminiRequest.toolConfig = this.buildGeminiToolConfigFromClaude(
+                claudeRequest.tool_choice,
+                declaredFunctionNames
+            );
         }
 
         // 添加默认安全设置
@@ -1620,7 +1632,7 @@ export class ClaudeConverter extends BaseConverter {
     /**
      * 构建Gemini工具配置
      */
-    buildGeminiToolConfigFromClaude(claudeToolChoice) {
+    buildGeminiToolConfigFromClaude(claudeToolChoice, declaredFunctionNames = null) {
         if (!claudeToolChoice || typeof claudeToolChoice !== 'object' || !claudeToolChoice.type) {
             logger.warn("Invalid claudeToolChoice provided.");
             return undefined;
@@ -1633,6 +1645,12 @@ export class ClaudeConverter extends BaseConverter {
                 return { functionCallingConfig: { mode: 'NONE' } };
             case 'tool':
                 if (claudeToolChoice.name && typeof claudeToolChoice.name === 'string') {
+                    if (declaredFunctionNames && !declaredFunctionNames.has(claudeToolChoice.name)) {
+                        throw new Error(
+                            `Gemini cannot force tool '${claudeToolChoice.name}' because it has no matching ` +
+                            "FunctionDeclaration. Native server-side tools require automatic selection."
+                        );
+                    }
                     return { 
                         functionCallingConfig: { 
                             mode: 'ANY', 
